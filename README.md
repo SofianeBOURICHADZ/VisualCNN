@@ -3,7 +3,7 @@
 Hello everyone, **VisualCNN** is an AI offline, open-source application that relies on python on PyTorch to serve as a tool for learning, experimenting and automation. It allows the usage of a Graphical User Interface (GUI) in order to design, tune, train and help deploy AI Image Classifiers (Other versions for other tasks available soon) . This allows to teach fundamentals of CNN without writing code.
 
 
-# Why did I make this
+# Why did I make this:
 
 I made this application to make CNN designing quicker, faster, and allows automation without touching code and having to make commits or backups for files. And my solution for this was VisualCNN.
 
