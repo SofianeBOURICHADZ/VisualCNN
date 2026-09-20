@@ -91,9 +91,6 @@ jobs:
           pyinstaller --noconfirm --onefile \
             --collect-all torch \
             --collect-all torchvision \
-            --collect-all tkinter \
-            --collect-all PIL \
-            --collect-all matplotlib \
             --exclude-module torch.testing \
             --exclude-module torch.distributed \
             --exclude-module torch.distributions \
