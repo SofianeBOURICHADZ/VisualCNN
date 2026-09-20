@@ -1,7 +1,7 @@
 numpy
 pandas
-PIL
+Pillow
 torch
-sklearn
+scikit-learn
 matplotlib
 torchvision
