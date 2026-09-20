@@ -93,8 +93,8 @@ jobs:
             --collect-all torchvision \
             --collect-all tkinter \
             --collect-all PIL \
-            --name "app" \
-            main.py
+            --name "VisualCNN" \
+            VisualCNN.py
         shell: bash
 
       - name: Rename Artifact
