@@ -93,6 +93,14 @@ jobs:
             --collect-all torchvision \
             --collect-all tkinter \
             --collect-all PIL \
+            --collect-all matplotlib \
+            --exclude-module torch.testing \
+            --exclude-module torch.distributed \
+            --exclude-module torch.distributions \
+            --exclude-module torch.utils.benchmark \
+            --exclude-module torch.utils.mobile_optimizer \
+            --exclude-module caffe2 \
+            --exclude-module scipy \
             --name "VisualCNN" \
             VisualCNN.py
         shell: bash
