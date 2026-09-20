@@ -1,0 +1,9 @@
+tkinter
+dataclasses
+numpy
+pandas
+PIL
+torch
+sklearn
+matplotlib
+torchvision
