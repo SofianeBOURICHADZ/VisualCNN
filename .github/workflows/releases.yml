@@ -99,8 +99,45 @@ jobs:
             --exclude-module torch.distributions \
             --exclude-module torch.utils.benchmark \
             --exclude-module torch.utils.mobile_optimizer \
+            --exclude-module torch.utils.tensorboard \
+            --exclude-module torch.utils.bottleneck \
+            --exclude-module torch.utils.flops_counter \
+            --exclude-module torch.onnx \
+            --exclude-module torch.profiler \
+            --exclude-module torch.fx \
+            --exclude-module torch.ao \
+            --exclude-module torch.quantization \
+            --exclude-module torch.compiler \
+            --exclude-module torch._dynamo \
+            --exclude-module torch._export \
+            --exclude-module torch.sparse \
+            --exclude-module torch.nested \
+            --exclude-module torch.masked \
+            --exclude-module torch.signal \
+            --exclude-module torch.special \
+            --exclude-module torch.fft \
+            --exclude-module torch.cuda.nvtx \
+            --exclude-module torch.cuda.jitrng \
+            --exclude-module torchvision.models \
+            --exclude-module torchvision.io \
             --exclude-module caffe2 \
             --exclude-module scipy \
+            --exclude-module triton \
+            --exclude-module sympy \
+            --exclude-module setuptools \
+            --exclude-module matplotlib.backends.backend_qt5agg \
+            --exclude-module matplotlib.backends.backend_qt6agg \
+            --exclude-module matplotlib.backends.backend_gtk3agg \
+            --exclude-module matplotlib.backends.backend_wxagg \
+            --exclude-module matplotlib.tests \
+            --exclude-module mpl_toolkits.mplot3d \
+            --exclude-module numpy.tests \
+            --exclude-module unittest \
+            --exclude-module doctest \
+            --exclude-module pydoc \
+            --exclude-module distutils \
+            --exclude-module IPython \
+            --exclude-module jupyter \
             --name "VisualCNN" \
             VisualCNN.py
         shell: bash
@@ -121,7 +158,7 @@ jobs:
             echo "ARCHIVE_NAME=${{ matrix.artifact-name }}.tar.gz" >> $GITHUB_ENV
           fi
         shell: bash
-        
+
       - name: Upload Artifact to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
