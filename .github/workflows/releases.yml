@@ -141,6 +141,44 @@ jobs:
             --name "VisualCNN" \
             VisualCNN.py
         shell: bash
+      
+      - name: Strip Linux CUDA Shared Libraries & Symbols
+        if: runner.os == 'Linux' && matrix.backend == 'gpu-cuda'
+        run: |
+          echo "Cleaning up heavy CUDA shared objects for Linux..."
+          # Unpack executable temporary directory if PyInstaller placed them, or target extracted libs
+          # Note: If running --onedir, strip directly from dist/VisualCNN/torch/lib/
+          
+          # Install strip utility
+          sudo apt-get install -y binutils
+
+          # Target PyTorch site-packages before pyinstaller OR build folder
+          PYTORCH_LIB=$(python -c "import torch, os; print(os.path.join(os.path.dirname(torch.__file__), 'lib'))")
+          
+          # Remove training-only cuDNN, NVRTC, CUPTI, and JIT linking binaries
+          rm -f $PYTORCH_LIB/libcudnn_cnn_train*.so*
+          rm -f $PYTORCH_LIB/libnvrtc*.so*
+          rm -f $PYTORCH_LIB/libnvjitlink*.so*
+          rm -f $PYTORCH_LIB/libcupti*.so*
+          rm -f $PYTORCH_LIB/libcusparse*.so*
+
+          # Strip debug symbols from all remaining .so files
+          find $PYTORCH_LIB -name "*.so*" -exec strip --strip-debug {} + || true
+        shell: bash
+
+      - name: Strip Windows CUDA Dynamic Link Libraries (.dll)
+        if: runner.os == 'Windows' && matrix.backend == 'gpu-cuda'
+        run: |
+          Write-Host "Cleaning up heavy CUDA DLLs for Windows..."
+          $PYTORCH_LIB = python -c "import torch, os; print(os.path.join(os.path.dirname(torch.__file__), 'lib'))"
+          
+          # Remove training cuDNN, NVRTC, CUPTI, and JIT linking DLLs
+          Remove-Item -Path "$PYTORCH_LIB\cudnn_cnn_train*.dll" -ErrorAction SilentlyContinue
+          Remove-Item -Path "$PYTORCH_LIB\nvrtc*.dll" -ErrorAction SilentlyContinue
+          Remove-Item -Path "$PYTORCH_LIB\nvjitlink*.dll" -ErrorAction SilentlyContinue
+          Remove-Item -Path "$PYTORCH_LIB\cupti*.dll" -ErrorAction SilentlyContinue
+          Remove-Item -Path "$PYTORCH_LIB\cusparse*.dll" -ErrorAction SilentlyContinue
+        shell: powershell
 
       - name: Rename Artifact
         run: |
