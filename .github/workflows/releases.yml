@@ -21,43 +21,43 @@ jobs:
             runner: windows-latest
             backend: cpu
             torch-pip: "torch torchvision --index-url https://download.pytorch.org/whl/cpu"
-            artifact-name: app-windows-cpu.exe
-            exe-path: dist/app.exe
+            artifact-name: VisualCNN-windows-cpu.exe
+            exe-path: dist/VisualCNN.exe
 
           - os: windows
             runner: windows-latest
             backend: gpu-cuda
             torch-pip: "torch torchvision --index-url https://download.pytorch.org/whl/cu121"
-            artifact-name: app-windows-gpu-cuda.exe
-            exe-path: dist/app.exe
+            artifact-name: VisualCNN-windows-gpu-cuda.exe
+            exe-path: dist/VisualCNN.exe
 
           - os: linux
             runner: ubuntu-latest
             backend: cpu
             torch-pip: "torch torchvision --index-url https://download.pytorch.org/whl/cpu"
-            artifact-name: app-linux-cpu
-            exe-path: dist/app
+            artifact-name: VisualCNN-linux-cpu
+            exe-path: dist/VisualCNN
 
           - os: linux
             runner: ubuntu-latest
             backend: gpu-cuda
             torch-pip: "torch torchvision --index-url https://download.pytorch.org/whl/cu121"
-            artifact-name: app-linux-gpu-cuda
-            exe-path: dist/app
+            artifact-name: VisualCNN-linux-gpu-cuda
+            exe-path: dist/VisualCNN
 
           - os: macos
             runner: macos-14
             backend: cpu
             torch-pip: "torch torchvision"
-            artifact-name: app-macos-cpu
-            exe-path: dist/app
+            artifact-name: VisualCNN-macos-cpu
+            exe-path: dist/VisualCNN
 
           - os: macos
             runner: macos-14
             backend: gpu-mps
             torch-pip: "torch torchvision"
-            artifact-name: app-macos-gpu-mps
-            exe-path: dist/app
+            artifact-name: VisualCNN-macos-gpu-mps
+            exe-path: dist/VisualCNN
 
     steps:
       - name: Checkout Code
