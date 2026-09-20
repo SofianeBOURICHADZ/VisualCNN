@@ -109,7 +109,19 @@ jobs:
         run: |
           mv ${{ matrix.exe-path }} dist/${{ matrix.artifact-name }}
         shell: bash
-
+        
+      - name: Archive Artifact
+        run: |
+          cd dist
+          if [ "${{ matrix.os }}" = "windows" ]; then
+            7z a ${{ matrix.artifact-name }}.zip ${{ matrix.artifact-name }}
+            echo "ARCHIVE_NAME=${{ matrix.artifact-name }}.zip" >> $GITHUB_ENV
+          else
+            tar -czvf ${{ matrix.artifact-name }}.tar.gz ${{ matrix.artifact-name }}
+            echo "ARCHIVE_NAME=${{ matrix.artifact-name }}.tar.gz" >> $GITHUB_ENV
+          fi
+        shell: bash
+        
       - name: Upload Artifact to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
