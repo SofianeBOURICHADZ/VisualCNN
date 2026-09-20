@@ -1,0 +1,109 @@
+name: Build and Release Application
+
+on:
+  push:
+    tags:
+      - 'v*.*.*' # Triggers on release tags like v1.0.0, v2.1.0
+
+jobs:
+  build-and-release:
+    name: Build (${{ matrix.os }} - ${{ matrix.backend }})
+    runs-on: ${{ matrix.runner }}
+
+    permissions:
+      contents: write # Required by softprops/action-gh-release to upload release assets
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # --- WINDOWS BUILDS ---
+          - os: windows
+            runner: windows-latest
+            backend: cpu
+            torch-pip-args: "torch torchvision --index-url https://download.pytorch.org/whl/cpu"
+            artifact-name: app-windows-cpu.exe
+            exe-path: dist/app.exe
+
+          - os: windows
+            runner: windows-latest
+            backend: gpu-cuda
+            torch-pip-args: "torch torchvision --index-url https://download.pytorch.org/whl/cu121"
+            artifact-name: app-windows-gpu-cuda.exe
+            exe-path: dist/app.exe
+
+          # --- LINUX BUILDS ---
+          - os: linux
+            runner: ubuntu-latest
+            backend: cpu
+            torch-pip-args: "torch torchvision --index-url https://download.pytorch.org/whl/cpu"
+            artifact-name: app-linux-cpu
+            exe-path: dist/app
+
+          - os: linux
+            runner: ubuntu-latest
+            backend: gpu-cuda
+            torch-pip-args: "torch torchvision --index-url https://download.pytorch.org/whl/cu121"
+            artifact-name: app-linux-gpu-cuda
+            exe-path: dist/app
+
+          # --- MACOS BUILDS ---
+          - os: macos
+            runner: macos-14 # Apple Silicon Runner (M1/M2/M3)
+            backend: cpu
+            torch-pip-args: "torch torchvision" # macOS uses standard PyPI wheels
+            artifact-name: app-macos-cpu
+            exe-path: dist/app
+
+          - os: macos
+            runner: macos-14
+            backend: gpu-mps # Metal Performance Shaders for macOS GPU acceleration
+            torch-pip-args: "torch torchvision"
+            artifact-name: app-macos-gpu-mps
+            exe-path: dist/app
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Upgrade pip and install PyInstaller
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller
+
+      - name: Install PyTorch and Torchvision (${{ matrix.backend }})
+        run: |
+          pip install ${{ matrix.torch-pip-args }}
+
+      - name: Install additional project dependencies
+        run: |
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        shell: bash
+
+      - name: Compile Executable with PyInstaller
+        run: |
+          pyinstaller --noconfirm --onefile \
+            --collect-all torch \
+            --collect-all torchvision \
+            --name "app" \
+            main.py
+        shell: bash
+
+      - name: Rename executable for artifact output
+        run: |
+          mv ${{ matrix.exe-path }} dist/${{ matrix.artifact-name }}
+        shell: bash
+
+      - name: Upload Build Artifacts to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/${{ matrix.artifact-name }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
